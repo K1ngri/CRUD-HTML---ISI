@@ -29,6 +29,8 @@ form.addEventListener('submit', function(event) {
   exibirProdutos();
 });
 
+
+
 // Função para exibir os produtos na tabela
 function exibirProdutos() {
 
@@ -49,8 +51,7 @@ function exibirProdutos() {
       <td>${produto.quantidade}</td>
       <td><img id="imagem" src="${produto.imagem}" width="100"></td>
       <td class="acao"><button id="editar">Editar</button>
-                       <button id="deletar">Deletar</button></t>
-    `;
+                       <button id="deletar">Deletar</button></t>`;
     tabela.appendChild(tr);
   }
 }
@@ -106,6 +107,7 @@ tabela.addEventListener('click', function(event) {
 
     // Chama a função de deletar o produto
     deletarProduto(index);
+    
   } else if (event.target.id === 'editar') {
     // Obtém o índice do produto a ser editado
     const index = event.target.parentNode.parentNode.rowIndex - 1;
@@ -114,3 +116,38 @@ tabela.addEventListener('click', function(event) {
     editarProduto(index);
   }
 });
+
+// Pega entradas da barra de pesquisa para o filtro de produtos
+const searchInput = document.getElementById('pesquisar');
+searchInput.addEventListener('input', function() {
+  pesquisarProdutos(this.value);
+});
+
+// Função para a pesquisa de produtos específicos
+function pesquisarProdutos(termo) {
+  // Obtém o array de produtos do Local Storage
+  let produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+
+  // Filtra os produtos pelo termo de busca
+  produtos = produtos.filter(function(produto) {
+    return produto.modelo.toUpperCase().indexOf(termo.toUpperCase()) > -1;
+  });
+
+  // Limpa a tabela
+  tabela.innerHTML = '';
+
+  // Loop pelos produtos filtrados e adiciona as linhas na tabela
+  for (let i = 0; i < produtos.length; i++) {
+    const produto = produtos[i];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${produto.tipo}</td>
+      <td>${produto.modelo}</td>
+      <td>${produto.preco}</td>
+      <td>${produto.quantidade}</td>
+      <td><img id="imagem" src="${produto.imagem}" width="100"></td>
+      <td class="acao"><button id="editar">Editar</button>
+                       <button id="deletar">Deletar</button></t>`;
+    tabela.appendChild(tr);
+  }
+}
